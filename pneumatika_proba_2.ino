@@ -40,7 +40,9 @@ void loop() {
   }
   lastButtonState = buttonState;
 
-  if (timer > 8000){    //ako push button nije pritisnut unutar 8 sekundi onda je vjv gotovo
-    Serial.println(pushButtonCounter);
+  if (timer > 8000){
+    if (timer < 8005){
+      Serial.println(pushButtonCounter);
     }
+  }
 }
