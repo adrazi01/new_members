@@ -16,16 +16,15 @@ void setup() {
 
 void loop() {
   
-  unsigned long currentMillisHigh = millis();
-  unsigned long currentMillisLow = millis();
-  unsigned long timer = millis();
+  unsigned long currentMillis = millis();
+  unsigned long timer = currentMillis;
   
-  if (currentMillisHigh - previousMillisHigh >= intervalHigh){
-      previousMillisHigh = currentMillisHigh;
+  if (currentMillis - previousMillisHigh >= intervalHigh){
+      previousMillisHigh = currentMillis;
       digitalWrite(trigger, LOW);
 
-      if (currentMillisLow - previousMillisLow >= intervalLow){
-        previousMillisLow = currentMillisLow;
+      if (currentMillis - previousMillisLow >= intervalLow){
+        previousMillisLow = currentMillis;
         digitalWrite(trigger, HIGH);
         }
   }
