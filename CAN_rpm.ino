@@ -8,47 +8,46 @@ unsigned char buf[8];
 unsigned int canID;
 uint16_t rpm;
 
+static void rpmFromCAN();
+
 void setup()
 {
   Serial.begin(115200);
-  
-START_INIT:
 
-    if(CAN_OK == CAN.begin(CAN_1000KBPS))
+    while(CAN_OK != CAN.begin(CAN_1000KBPS))
     {
-        Serial.println("CAN BUS Shield init ok!");
+       Serial.println("CAN BUS Shield init fail");
+       Serial.println("Init CAN BUS Shield again");
+       delay(100);
     }
-    else
-    {
-        Serial.println("CAN BUS Shield init fail");
-        Serial.println("Init CAN BUS Shield again");
-        delay(100);
-        goto START_INIT;
-    }
+    
+    Serial.println("CAN BUS Shield init ok!");
+
+  attachInterrupt(10, rpmFromCAN, FALLING);
 }
 
 
 
 void loop()
 {
-    if(CAN_MSGAVAIL == CAN.checkReceive())
-    {
-        CAN.readMsgBuf(&len, buf);
-        canID = 1250;
-
-        Serial.print(" Length is: ");
-        Serial.println(len);
-        
-        if (len > 4) {
-          for(int i = 0; i<len; i++) {
-            
-            Serial.write(buf[i]);
-            
-               rpm = buf[2];
-               rpm = rpm << 8;
-               rpm += buf[3];
-            }
-            Serial.println(rpm);
-        }
-    }
 }
+
+static void rpmFromCAN(){
+     CAN.readMsgBuf(&len, buf);
+     canID = 1250;
+
+     Serial.print(" Length is: ");
+     Serial.println(len);
+        
+     if (len > 4) {
+       for(int i = 0; i<len; i++) {
+            
+         Serial.write(buf[i]);
+            
+            rpm = buf[2];
+            rpm = rpm << 8;
+            rpm += buf[3];
+         }
+         Serial.println(rpm);
+     }
+  }
